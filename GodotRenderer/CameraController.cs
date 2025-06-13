@@ -14,7 +14,7 @@ public partial class CameraController : Node3D
     }
     public override void _Process(double delta)
     {
-        // player movement
+        // movement
         var fdelta = (float)delta;
         var moveDir = Vector3.Zero;
         if (Input.IsKeyPressed(Key.W))

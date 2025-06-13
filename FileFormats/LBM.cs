@@ -4,7 +4,7 @@ using Hexa.NET.SDL3;
 using Hexa.NET.SDL3.Image;
 
 
-namespace mtw3dviewer.Parser
+namespace mtw3dviewer.FileFormats
 {
     public unsafe class LBM
     {

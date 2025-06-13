@@ -1,9 +1,9 @@
 [gd_scene load_steps=9 format=3 uid="uid://cjuc27561p205"]
 
-[ext_resource type="Script" uid="uid://c8o8df1ebqrke" path="res://Src/ModelViewer.cs" id="1_rwbou"]
-[ext_resource type="Script" uid="uid://b0dj0yx1sprqc" path="res://Src/Model.cs" id="2_bakwm"]
-[ext_resource type="Script" uid="uid://drcrqfxjkorfh" path="res://Src/CameraController.cs" id="2_ooxbr"]
-[ext_resource type="Script" uid="uid://bnujw73bwqk1r" path="res://Src/DebugViewer.cs" id="4_al7hn"]
+[ext_resource type="Script" uid="uid://c8o8df1ebqrke" path="res://GodotRenderer/ModelViewer.cs" id="1_rwbou"]
+[ext_resource type="Script" uid="uid://b0dj0yx1sprqc" path="res://GodotRenderer/Model.cs" id="2_bakwm"]
+[ext_resource type="Script" uid="uid://drcrqfxjkorfh" path="res://GodotRenderer/CameraController.cs" id="2_ooxbr"]
+[ext_resource type="Script" uid="uid://bnujw73bwqk1r" path="res://GodotRenderer/DebugViewer.cs" id="4_al7hn"]
 
 [sub_resource type="Environment" id="Environment_ooxbr"]
 ambient_light_source = 2

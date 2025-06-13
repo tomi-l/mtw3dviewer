@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace mtw3dviewer.Parser
+namespace mtw3dviewer.FileFormats
 {
     /// <summary>
     /// .3xx File format
