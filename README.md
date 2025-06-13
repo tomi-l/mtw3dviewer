@@ -3,7 +3,7 @@ Viewer for medieval total war 3d files using [Godot](https://godotengine.org/)
 
 Use Mouse2 to rotate camera and WASD to move
 
-Model files are located in Steam\steamapps\common\Total War Medieval 1 Gold\Models\* directory
+Model files are located in Steam\steamapps\common\Total War Medieval 1 Gold\Models\*\ directory
 
 ![image](https://github.com/user-attachments/assets/ceaba967-aca1-4ecc-8dd4-b31ac1d4a583)
 
