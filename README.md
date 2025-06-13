@@ -46,3 +46,10 @@ struct Triangle {
 };
 ```
 VertexIndex and NormalIndex refer to the earlier blocks respectively
+
+# Textures
+Texture filenames are defined in .txx file. Actual texture image files are located in Models directory. These are mostly stored in .LBM format. 
+I use https://github.com/HexaEngine/Hexa.NET.SDL.Image to extract pixel data.
+
+# Rendering
+I use [Godot](https://godotengine.org/) to render the model.
