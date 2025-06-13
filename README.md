@@ -4,7 +4,7 @@ Viewer for medieval total war 3d files using [Godot](https://godotengine.org/)
 # 3xx File format
 ![image](https://github.com/user-attachments/assets/e7c4dc20-733d-46cc-bc37-51e0c9f0dea1)
 
-3.xx file starts with count of incoming vertices.
+.3xx file starts with count of incoming vertices.
 
 ![image](https://github.com/user-attachments/assets/9af1ea61-e449-475c-8cc1-d3255fb434bc)
 
