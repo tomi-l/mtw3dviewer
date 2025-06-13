@@ -4,8 +4,10 @@ Viewer for medieval total war 3d files
 # 3xx File format
 ![image](https://github.com/user-attachments/assets/e7c4dc20-733d-46cc-bc37-51e0c9f0dea1)
 
-3.xx file starts with count of incoming vertices. 
+3.xx file starts with count of incoming vertices.
+
 ![image](https://github.com/user-attachments/assets/9af1ea61-e449-475c-8cc1-d3255fb434bc)
+
 Each vertex is a struct of 3 floats
 ```
 struct Vertices {
@@ -15,7 +17,9 @@ struct Vertices {
 };
 ```
 After vertices, next information is count of normals
+
 ![image](https://github.com/user-attachments/assets/84ac43f3-0677-4684-8e1a-7b10cc20a241)
+
 Each normal is a struct of 3 floats
 ```
 struct Normal {
@@ -25,7 +29,9 @@ struct Normal {
 };
 ```
 After normals, next information is count of triangles
+
 ![image](https://github.com/user-attachments/assets/02c68f68-2f7a-499b-af91-be75d9cdfef1)
+
 Each triangle consists of TextureID of the triangle and 3 blocks of UV data for each vertex of triangle
 ```
 struct Uv {
