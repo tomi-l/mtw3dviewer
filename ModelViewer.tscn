@@ -40,7 +40,6 @@ title = "Open a File"
 ok_button_text = "Open"
 file_mode = 0
 access = 2
-root_subfolder = "D:\\Steam\\steamapps\\common\\Total War Medieval 1 Gold\\Models\\Western European"
 filters = PackedStringArray("*.3xx")
 use_native_dialog = true
 
