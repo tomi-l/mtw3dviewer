@@ -10,7 +10,7 @@ Viewer for medieval total war 3d files
 
 Each vertex is a struct of 3 floats
 ```
-struct Vertices {
+struct Vertex {
     float x;
     float y;
     float z;
