@@ -161,13 +161,7 @@ namespace mtw3dviewer.Parser
             {
                 foreach (var u in t.Uvs)
                 {
-                    var v = _verticesTable[u.VertexIndex];
-                    yield return new Vertex
-                    {
-                        X = v.X,
-                        Y = v.Y,
-                        Z = v.Z
-                    };
+                    yield return _verticesTable[u.VertexIndex];
                 }
             }
         }
@@ -181,13 +175,7 @@ namespace mtw3dviewer.Parser
             {
                 foreach (var u in t.Uvs)
                 {
-                    var normal = _normalsTable[u.NormalIndex];
-                    yield return new Vertex
-                    {
-                        X = normal.X,
-                        Y = normal.Y,
-                        Z = normal.Z
-                    };
+                    yield return _normalsTable[u.NormalIndex];
                 }
             }
         }
