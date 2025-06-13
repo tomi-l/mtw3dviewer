@@ -1,0 +1,66 @@
+[gd_scene load_steps=9 format=3 uid="uid://cjuc27561p205"]
+
+[ext_resource type="Script" uid="uid://c8o8df1ebqrke" path="res://Src/ModelViewer.cs" id="1_rwbou"]
+[ext_resource type="Script" uid="uid://b0dj0yx1sprqc" path="res://Src/Model.cs" id="2_bakwm"]
+[ext_resource type="Script" uid="uid://drcrqfxjkorfh" path="res://Src/CameraController.cs" id="2_ooxbr"]
+[ext_resource type="Script" uid="uid://bnujw73bwqk1r" path="res://Src/DebugViewer.cs" id="4_al7hn"]
+
+[sub_resource type="Environment" id="Environment_ooxbr"]
+ambient_light_source = 2
+ambient_light_color = Color(0.644663, 0.644663, 0.644663, 1)
+reflected_light_source = 1
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_rwbou"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ooxbr"]
+transparency = 1
+albedo_color = Color(0.219608, 0.219608, 0.219608, 0.207843)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ooxbr"]
+material = SubResource("StandardMaterial3D_ooxbr")
+size = Vector2(200, 200)
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_rwbou")
+
+[node name="CameraController" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.966061, 0.258313, 0, -0.258313, 0.966061, 0, 217.307, 408)
+script = ExtResource("2_ooxbr")
+
+[node name="Camera3D" type="Camera3D" parent="CameraController"]
+environment = SubResource("Environment_ooxbr")
+
+[node name="Model" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+mesh = SubResource("ArrayMesh_rwbou")
+script = ExtResource("2_bakwm")
+
+[node name="FileDialog" type="FileDialog" parent="."]
+title = "Open a File"
+ok_button_text = "Open"
+file_mode = 0
+access = 2
+root_subfolder = "D:\\Steam\\steamapps\\common\\Total War Medieval 1 Gold\\Models\\Western European"
+filters = PackedStringArray("*.3xx")
+use_native_dialog = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_ooxbr")
+
+[node name="MenuBar" type="MenuBar" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="OpenButton" type="Button" parent="MenuBar"]
+layout_mode = 0
+offset_right = 50.0
+offset_bottom = 31.0
+text = "Open"
+
+[node name="DebugViewer" type="GridContainer" parent="."]
+offset_left = 2.0
+offset_top = 32.0
+offset_right = 42.0
+offset_bottom = 72.0
+columns = 2
+script = ExtResource("4_al7hn")
