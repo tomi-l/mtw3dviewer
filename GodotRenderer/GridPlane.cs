@@ -59,7 +59,7 @@ namespace mtw3dviewer.GodotRenderer
                 }
 
             }
-            // 2048
+            // 2048 
             for (int d = 1; d < map.Divisions; d++)
             {
                 var offset = map.MainNodes.GetLength(0) * map.MainNodes.GetLength(1) + d - 1;
