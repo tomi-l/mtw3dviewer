@@ -5,27 +5,28 @@ using System.Linq;
 
 namespace mtw3dviewer.FileFormats
 {
+    public struct Vertex
+    {
+        public float X { get; set; }
+        public float Y { get; set; }
+        public float Z { get; set; }
+
+        public static Vertex Parse(BinaryReader reader)
+        {
+            return new Vertex
+            {
+                X = reader.ReadSingle(),
+                Y = reader.ReadSingle(),
+                Z = reader.ReadSingle(),
+            };
+        }
+    }
+
     /// <summary>
     /// .3xx File format
     /// </summary>
     public class Model3xx
     {
-        public struct Vertex
-        {
-            public float X { get; set; }
-            public float Y { get; set; }
-            public float Z { get; set; }
-
-            public static Vertex Parse(BinaryReader reader)
-            {
-                return new Vertex
-                {
-                    X = reader.ReadSingle(),
-                    Y = reader.ReadSingle(),
-                    Z = reader.ReadSingle(),
-                };
-            }
-        }
         public struct Uv
         {
             public int VertexIndex { get; set; }

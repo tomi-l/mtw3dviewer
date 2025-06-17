@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://cjuc27561p205"]
+[gd_scene load_steps=10 format=3 uid="uid://cjuc27561p205"]
 
 [ext_resource type="Script" uid="uid://c8o8df1ebqrke" path="res://GodotRenderer/ModelViewer.cs" id="1_rwbou"]
 [ext_resource type="Script" uid="uid://b0dj0yx1sprqc" path="res://GodotRenderer/Model.cs" id="2_bakwm"]
 [ext_resource type="Script" uid="uid://drcrqfxjkorfh" path="res://GodotRenderer/CameraController.cs" id="2_ooxbr"]
+[ext_resource type="Script" uid="uid://cj5jlqluuyf6y" path="res://GodotRenderer/MapPlane.cs" id="4_7i78i"]
 [ext_resource type="Script" uid="uid://bnujw73bwqk1r" path="res://GodotRenderer/DebugViewer.cs" id="4_al7hn"]
 
 [sub_resource type="Environment" id="Environment_ooxbr"]
@@ -29,6 +30,7 @@ script = ExtResource("2_ooxbr")
 
 [node name="Camera3D" type="Camera3D" parent="CameraController"]
 environment = SubResource("Environment_ooxbr")
+far = 400000.0
 
 [node name="Model" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
@@ -40,11 +42,15 @@ title = "Open a File"
 ok_button_text = "Open"
 file_mode = 0
 access = 2
-filters = PackedStringArray("*.3xx")
+root_subfolder = "D:\\Steam\\steamapps\\common\\Total War Medieval 1 Gold\\"
+filters = PackedStringArray("*.3xx", "*jjm")
 use_native_dialog = true
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="Ref" type="MeshInstance3D" parent="."]
 mesh = SubResource("PlaneMesh_ooxbr")
+
+[node name="Terrain" type="MeshInstance3D" parent="."]
+script = ExtResource("4_7i78i")
 
 [node name="MenuBar" type="MenuBar" parent="."]
 offset_right = 40.0

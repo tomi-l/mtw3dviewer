@@ -7,11 +7,13 @@ public partial class ModelViewer : Node3D
 
     private FileDialog _dialog;
     private Model _mesh;
+    private MapPlane _mapPlane;
     private CameraController _camera;
     public override void _Ready()
     {
         _dialog = GetNode<FileDialog>("FileDialog");
         _mesh = GetNode<Model>("Model");
+        _mapPlane = GetNode<MapPlane>("Terrain");
         _dialog.FileSelected += LoadFile;
         _camera = GetNode<CameraController>("CameraController");
         GetNode<MenuBar>("MenuBar").GetNode<Button>("OpenButton").Pressed += () =>
@@ -19,6 +21,7 @@ public partial class ModelViewer : Node3D
             _dialog.Show();
         };
         base._Ready();
+        GetViewport().DebugDraw = Viewport.DebugDrawEnum.Wireframe;
     }
     public override void _UnhandledKeyInput(InputEvent @event)
     {
@@ -37,6 +40,17 @@ public partial class ModelViewer : Node3D
     private void LoadFile(string path)
     {
         //Input.MouseMode = Input.MouseModeEnum.Captured;
-        _mesh.LoadModel(path);
+        if (path.ToLower().EndsWith(".3xx"))
+        {
+            _mesh.LoadModel(path);
+        }
+        else if (path.ToLower().EndsWith(".jjm"))
+        {
+          
+            _mapPlane.LoadMap(path);
+            //var n = _mapPlane.Map.Nodes[5, 5];
+            //_camera.GlobalPosition = new Vector3(0, n.Height, 0);
+        }
+
     }
 }
