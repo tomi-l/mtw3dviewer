@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using mtw3dviewer.FileFormats;
 
@@ -6,6 +7,7 @@ namespace mtw3dviewer.GodotRenderer
 {
     public partial class GridPlane : MeshInstance3D
     {
+        private readonly int MIDPOINT = 2048 / 2;
         public override void _Ready()
         {
             base._Ready();
@@ -16,6 +18,58 @@ namespace mtw3dviewer.GodotRenderer
             this.Mesh = new ArrayMesh();
             AddSurface(node, map, this.Mesh as ArrayMesh);
         }
+        private List<Vertex> Quad(GridNode node, Jjm map, ArrayMesh mesh, out List<int> indices)
+        {
+            indices = new();
+            List<Vertex> vs = new();
+            var v = map.Nodes[0, node.Column, node.Row].AsVertex(); // Top left
+            var right = map.Nodes[0, node.Column + 1, node.Row].AsVertex(); // Top right
+            var diagonal = map.Nodes[0, node.Column + 1, node.Row + 1].AsVertex(); // Bottom right
+            var down = map.Nodes[0, node.Column, node.Row + 1].AsVertex(); // Bottom left
+
+            vs.Add(v);
+            vs.Add(new Vertex { X = v.X + MIDPOINT, Y = (v.Y + right.Y) * 0.5f, Z = v.Z }); // avg of top left and top right
+            vs.Add(right);
+
+            vs.Add(new Vertex { X = right.X, Y = (diagonal.Y + right.Y) * 0.5f, Z = right.Z - MIDPOINT });  // avg of top right and bottom right
+            vs.Add(diagonal);
+
+            vs.Add(new Vertex { X = diagonal.X - MIDPOINT, Y = (diagonal.Y + down.Y) * 0.5f, Z = diagonal.Z }); // avg of bottom right and bottom left
+            vs.Add(down);
+            vs.Add(new Vertex { X = down.X, Y = (v.Y + down.Y) * 0.5f, Z = down.Z + MIDPOINT }); // avg of bottom right and top left
+
+            // Build inner vertices from control nodes
+            v = map.Nodes[0, node.Column, node.Row].AsVertex();
+            var controlNode = map.Nodes[4, node.Column, node.Row].AsVertex(); // 4th control node of current main node
+            vs.Add(new Vertex { X = v.X + MIDPOINT / 2, Y = controlNode.Y, Z = v.Z - MIDPOINT / 2 });
+            controlNode = map.Nodes[3, node.Column + 1, node.Row].AsVertex(); // 3rd control node of right neighbour node
+            vs.Add(new Vertex { X = v.X + MIDPOINT * 1.5f, Y = controlNode.Y, Z = v.Z - MIDPOINT / 2 });
+            controlNode = map.Nodes[1, node.Column + 1, node.Row + 1].AsVertex(); // 1st control node of diagonal neighbour node
+            vs.Add(new Vertex { X = v.X + MIDPOINT * 1.5f, Y = controlNode.Y, Z = v.Z - MIDPOINT * 1.5f });
+            controlNode = map.Nodes[2, node.Column, node.Row + 1].AsVertex(); // 2nd control node of down neighbour node
+            vs.Add(new Vertex { X = v.X + MIDPOINT / 2, Y = controlNode.Y, Z = v.Z - MIDPOINT * 1.5f });
+
+            indices = new()
+            {
+                0,7,8,
+                8,7,11,
+                7,6,11,
+                6,5,11,
+                5,10,11,
+                5,4,10,
+                4,3,10,
+                3,9,10,
+                3,2,9,
+                2,1,9,
+                1,8,9,
+                1,0,8,
+
+                8,11,10,
+                10,9,8,
+            };
+
+            return vs;
+        }
         private void AddSurface(GridNode node, Jjm map, ArrayMesh mesh)
         {
             // Edge nodes
@@ -24,74 +78,20 @@ namespace mtw3dviewer.GodotRenderer
 
             Godot.Collections.Array surfaceArray = [];
             surfaceArray.Resize((int)Mesh.ArrayType.Max);
-            var verts = new List<Vector3>();
-            var indices = new List<int> { 2, 1, 0, 2, 3, 1 };
-            var index = 0;
+            var indices = new List<int>();
 
-            for (int y = node.Row; y <= node.Row + 1; y++)
-            {
-                for (int x = node.Column; x <= node.Column + 1; x++)
-                {
-                    var v = map.Vertices[y * map.MainNodes.GetLength(1) + x];
-                    verts.Add(new Vector3(v.X, v.Y, v.Z));
-                    indices.AddRange(new List<int>
-                    {
+            var verts = Quad(node, map, mesh, out indices).Select(x => new Vector3(x.X, x.Y, x.Z));
 
-                    });
-
-                    //for (int d = 4; d < map.Divisions; d++)
-
-                    // if (node.Column < map.Nodes.GetLength(0) - 1 && node.Row < map.Nodes.GetLength(1) - 1)
-                    {
-                        // var v = map.Nodes[x, y];
-                        //verts.Add(new Vector3(v.X, v.Height * -1, v.Y));
-
-
-                        /*indices.Add(index); // kolmio1
-                        indices.Add(index + 1);
-                        indices.Add(index + map.Nodes.GetLength(0));
-
-                        indices.Add(index + 1); // kolmio2
-                        indices.Add(index + map.Nodes.GetLength(0) + 1);
-                        indices.Add(index + map.Nodes.GetLength(0));*/
-                    }
-                    //index++;
-                }
-
-            }
-            // 2048 
-            for (int d = 1; d < map.Divisions; d++)
-            {
-                var offset = map.MainNodes.GetLength(0) * map.MainNodes.GetLength(1) + d - 1;
-                var nd = map.AllNodes[offset];
-                var ndd = map.Nodez[d, node.Column, node.Row];
-                var offf = node.Row * map.MainNodes.GetLength(1) + node.Column * (map.Divisions - 1) + offset;
-                var v = map.Vertices[offf];
-                var vv = new Vertex { X = ndd.X, Y = ndd.Height * -1, Z = ndd.Y };
-
-
-                var c = map.Cords[new System.Tuple<uint, uint>(ndd.X, ndd.Y)];
-                if (c == null)
-                    throw new System.Exception();
-                //verts.Add(new Vector3(v.X, v.Y, v.Z));
-                //verts.Add(new Vector3(vv.X + 2048*0.5f, vv.Y, vv.Z+ 2048*0.5f));
-                verts.Add(new Vector3(vv.X, vv.Y, vv.Z));
-                // verts.Add(new Vector3(vv.X + vv.X * 0.5f, vv.Y, vv.Z + vv.Y * 0.5f));
-                indices.AddRange(new List<int>
-                {
-
-                });
-            }
             surfaceArray[(int)Mesh.ArrayType.Vertex] = verts.ToArray();
             //surfaceArray[(int)Mesh.ArrayType.TexUV] = uvs.ToArray();
             //surfaceArray[(int)Mesh.ArrayType.Normal] = normals.Select(v => new Vector3(v.X, v.Y, v.Z)).ToArray();
-            //surfaceArray[(int)Mesh.ArrayType.Index] = indices.ToArray();
+            surfaceArray[(int)Mesh.ArrayType.Index] = indices.ToArray();
 
-            mesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Points, surfaceArray);
+            mesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, surfaceArray);
             mesh.SurfaceSetMaterial(0, new StandardMaterial3D());
             var m = mesh.SurfaceGetMaterial(0) as StandardMaterial3D;
             m.PointSize = 8;
-            m.UsePointSize = true;
+            //m.UsePointSize = true;
 
         }
     }

@@ -20,6 +20,10 @@ namespace mtw3dviewer.FileFormats
                 Z = reader.ReadSingle(),
             };
         }
+        public override string ToString()
+        {
+            return $"X:{X} Y:{Y} Z:{Z}";
+        }
     }
 
     /// <summary>

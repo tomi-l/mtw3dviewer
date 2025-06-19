@@ -21,7 +21,7 @@ public partial class ModelViewer : Node3D
             _dialog.Show();
         };
         base._Ready();
-        GetViewport().DebugDraw = Viewport.DebugDrawEnum.Wireframe;
+       
     }
     public override void _UnhandledKeyInput(InputEvent @event)
     {
@@ -46,7 +46,7 @@ public partial class ModelViewer : Node3D
         }
         else if (path.ToLower().EndsWith(".jjm"))
         {
-          
+           GetViewport().DebugDraw = Viewport.DebugDrawEnum.Wireframe;
             _mapPlane.LoadMap(path);
             //var n = _mapPlane.Map.Nodes[5, 5];
             //_camera.GlobalPosition = new Vector3(0, n.Height, 0);

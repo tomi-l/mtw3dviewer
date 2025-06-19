@@ -11,7 +11,6 @@ public partial class MapPlane : MeshInstance3D
     public override void _Ready()
     {
         base._Ready();
-
     }
 
     public void LoadMap(string fileName)
@@ -25,12 +24,12 @@ public partial class MapPlane : MeshInstance3D
         {
             c.QueueFree();
         }
-        for (int y = 0; y < map.MainNodes.GetLength(1); y++)
+        for (int y = map.MainNodes.GetLength(1) - 1; y > 0; y--)
         {
             for (int x = 0; x < map.MainNodes.GetLength(0); x++)
             {
                 var plane = new GridPlane();
-                plane.Create(map.MainNodes[x,y], map);
+                plane.Create(map.Nodes[0, x, y], map);
                 this.AddChild(plane);
                 _planes[x, y] = plane;
             }
