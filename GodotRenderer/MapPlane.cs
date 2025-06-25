@@ -34,14 +34,14 @@ public partial class MapPlane : MeshInstance3D
             if (img == null)
                 throw new FileLoadException($"Texture load failed {path}");
 
-            _textures.Add(t.TextureId, img);
+            _textures.TryAdd(t.GetHashCode(), img);
         }
-        for (int y = map.MainNodes.GetLength(1) - 2; y > 0; y--)
+        for (int y = map.MainNodes.GetLength(1) - 1; y > 0; y--)
         {
-            for (int x = 0; x < map.MainNodes.GetLength(0) - 1; x++)
+            for (int x = 0; x < map.MainNodes.GetLength(0) - 2; x++)
             {
                 var plane = new GridPlane();
-                plane.Create(map.Nodes[0, x, y], map, _textures[map.Textures[x, y].TextureId]);
+                plane.Create(map.Nodes[0, x, y], map, _textures[map.Textures[x, y - 1].GetHashCode()]);
                 this.AddChild(plane);
                 _planes[x, y] = plane;
             }

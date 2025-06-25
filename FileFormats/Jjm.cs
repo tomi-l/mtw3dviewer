@@ -50,6 +50,10 @@ namespace mtw3dviewer.FileFormats
                 return Regex.Match(path, @".+?(?<=Total War Medieval 1 Gold)").ToString() +
                     $"/Textures/Ground/{terrainType.ToTextureFolder()}/{TextureId:D3}.tga";
             }
+            public override int GetHashCode()
+            {
+                return TextureId << 8 | Orientation;
+            }
         }
         public ushort Dimensions { get; private set; }
         public ushort Divisions { get; private set; }
