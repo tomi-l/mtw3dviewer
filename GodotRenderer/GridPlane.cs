@@ -13,12 +13,12 @@ namespace mtw3dviewer.GodotRenderer
             base._Ready();
         }
 
-        public void Create(GridNode node, Jjm map)
+        public void Create(GridNode node, Jjm map, Texture2D texture)
         {
             this.Mesh = new ArrayMesh();
-            AddSurface(node, map, this.Mesh as ArrayMesh);
+            AddSurface(node, map, this.Mesh as ArrayMesh, texture);
         }
-        private List<Vertex> Quad(GridNode node, Jjm map, ArrayMesh mesh, out List<int> indices)
+        private List<Vertex> Quad(GridNode node, Jjm map, ArrayMesh mesh, out List<int> indices, out List<Vector2> uvs)
         {
             indices = new();
             List<Vertex> vs = new();
@@ -68,9 +68,24 @@ namespace mtw3dviewer.GodotRenderer
                 10,9,8,
             };
 
+            uvs =
+            [
+                new Vector2(0, 0),
+                new Vector2(0.5f, 0),
+                new Vector2(1, 0),
+                new Vector2(1, 0.5f),
+                new Vector2(1, 1),
+                new Vector2(0.5f, 1),
+                new Vector2(0, 1),
+                new Vector2(0, 0.5f),
+                new Vector2(0.25f, 0.25f),
+                new Vector2(0.75f, 0.25f),
+                new Vector2(0.75f,0.75f),
+                new Vector2(0.25f, 0.75f),
+            ];
             return vs;
         }
-        private void AddSurface(GridNode node, Jjm map, ArrayMesh mesh)
+        private void AddSurface(GridNode node, Jjm map, ArrayMesh mesh, Texture2D texture)
         {
             // Edge nodes
             if (node.Column >= map.MainNodes.GetLength(0) - 1 || node.Row >= map.MainNodes.GetLength(1) - 1)
@@ -78,21 +93,22 @@ namespace mtw3dviewer.GodotRenderer
 
             Godot.Collections.Array surfaceArray = [];
             surfaceArray.Resize((int)Mesh.ArrayType.Max);
-            var indices = new List<int>();
 
-            var verts = Quad(node, map, mesh, out indices).Select(x => new Vector3(x.X, x.Y, x.Z));
+            var verts = Quad(node, map, mesh, out var indices, out var uvs).Select(x => new Vector3(x.X, x.Y, x.Z));
 
             surfaceArray[(int)Mesh.ArrayType.Vertex] = verts.ToArray();
-            //surfaceArray[(int)Mesh.ArrayType.TexUV] = uvs.ToArray();
+            surfaceArray[(int)Mesh.ArrayType.TexUV] = uvs.ToArray();
             //surfaceArray[(int)Mesh.ArrayType.Normal] = normals.Select(v => new Vector3(v.X, v.Y, v.Z)).ToArray();
             surfaceArray[(int)Mesh.ArrayType.Index] = indices.ToArray();
 
             mesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, surfaceArray);
-            mesh.SurfaceSetMaterial(0, new StandardMaterial3D());
-            var m = mesh.SurfaceGetMaterial(0) as StandardMaterial3D;
-            m.PointSize = 8;
-            //m.UsePointSize = true;
 
+            var material = new StandardMaterial3D();
+            material.AlbedoTexture = texture;
+            mesh.SurfaceSetMaterial(0, material);
+            // var m = mesh.SurfaceGetMaterial(0) as StandardMaterial3D;
+            // m.PointSize = 8;
+            //m.UsePointSize = true;
         }
     }
 }

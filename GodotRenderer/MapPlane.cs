@@ -1,13 +1,16 @@
 using Godot;
+using mtw3dviewer.DataTypes;
 using mtw3dviewer.FileFormats;
 using mtw3dviewer.GodotRenderer;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 public partial class MapPlane : MeshInstance3D
 {
     public Jjm Map { get; private set; }
     private GridPlane[,] _planes;
+    private Dictionary<int, Texture2D> _textures = new();
     public override void _Ready()
     {
         base._Ready();
@@ -24,12 +27,21 @@ public partial class MapPlane : MeshInstance3D
         {
             c.QueueFree();
         }
-        for (int y = map.MainNodes.GetLength(1) - 1; y > 0; y--)
+        foreach (var t in map.DistinctTextures)
         {
-            for (int x = 0; x < map.MainNodes.GetLength(0); x++)
+            string path = t.Path(fileName, TerrainType.LUSH);
+            var img = ImageTexture.CreateFromImage(Image.LoadFromFile(path));
+            if (img == null)
+                throw new FileLoadException($"Texture load failed {path}");
+
+            _textures.Add(t.TextureId, img);
+        }
+        for (int y = map.MainNodes.GetLength(1) - 2; y > 0; y--)
+        {
+            for (int x = 0; x < map.MainNodes.GetLength(0) - 1; x++)
             {
                 var plane = new GridPlane();
-                plane.Create(map.Nodes[0, x, y], map);
+                plane.Create(map.Nodes[0, x, y], map, _textures[map.Textures[x, y].TextureId]);
                 this.AddChild(plane);
                 _planes[x, y] = plane;
             }
