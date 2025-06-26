@@ -3,7 +3,7 @@ using System;
 
 public partial class CameraController : Node3D
 {
-    private const float MOVESPEED = 2500f;
+    private const float MOVESPEED = 4500f;
     private const float CAMERA_MOUSE_ROTATION_SPEED = 0.003f;
     private Camera3D _camera;
     private bool _mouseLook;

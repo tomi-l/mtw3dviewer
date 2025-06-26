@@ -10,6 +10,16 @@ namespace mtw3dviewer.FileFormats
         public float X { get; set; }
         public float Y { get; set; }
         public float Z { get; set; }
+        public Vertex()
+        {
+
+        }
+        public Vertex(float x, float y, float z)
+        {
+            X = x;
+            Y = y;
+            Z = z;
+        }
 
         public static Vertex Parse(BinaryReader reader)
         {
@@ -19,6 +29,32 @@ namespace mtw3dviewer.FileFormats
                 Y = reader.ReadSingle(),
                 Z = reader.ReadSingle(),
             };
+        }
+        public static Vertex operator +(Vertex a, Vertex b)
+        {
+            return new Vertex(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
+        }
+        public static Vertex operator -(Vertex a, Vertex b)
+        {
+            return new Vertex(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
+        }
+        public static Vertex operator -(Vertex v)
+        {
+            v.X = 0f - v.X;
+            v.Y = 0f - v.Y;
+            v.Z = 0f - v.Z;
+            return v;
+        }
+        public static Vertex operator *(Vertex v, float fact)
+        {
+            return new Vertex(v.X * fact, v.Y * fact, v.Z * fact);
+        }
+        public static Vertex operator *(float scale, Vertex v)
+        {
+            v.X *= scale;
+            v.Y *= scale;
+            v.Z *= scale;
+            return v;
         }
         public override string ToString()
         {

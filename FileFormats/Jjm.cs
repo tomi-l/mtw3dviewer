@@ -1,7 +1,9 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using Godot;
 using mtw3dviewer.DataTypes;
 
 namespace mtw3dviewer.FileFormats
@@ -30,31 +32,35 @@ namespace mtw3dviewer.FileFormats
             };
         }
     }
+    public struct MapTexture
+    {
+        public byte TextureId { get; set; }
+        public byte Orientation { get; set; }
+        // First 2 bits are number of 90 deg rotations
+        public int Rotation => (Orientation >> 6) & 3;
+        // 3rd bit is flip information
+        public bool Flip => ((Orientation >> 5) & 1) != 0;
+
+        public static MapTexture Parse(BinaryReader reader)
+        {
+            return new MapTexture
+            {
+                TextureId = reader.ReadByte(),
+                Orientation = reader.ReadByte()
+            };
+        }
+        public string Path(string path, TerrainType terrainType)
+        {
+            return Regex.Match(path, @".+?(?<=Total War Medieval 1 Gold)").ToString() +
+                $"/Textures/Ground/{terrainType.ToTextureFolder()}/{TextureId:D3}.tga";
+        }
+        public override int GetHashCode()
+        {
+            return TextureId << 8 | Orientation;
+        }
+    }
     public class Jjm
     {
-        public struct MapTexture
-        {
-            public byte TextureId { get; set; }
-            public byte Orientation { get; set; }
-
-            public static MapTexture Parse(BinaryReader reader)
-            {
-                return new MapTexture
-                {
-                    TextureId = reader.ReadByte(),
-                    Orientation = reader.ReadByte()
-                };
-            }
-            public string Path(string path, TerrainType terrainType)
-            {
-                return Regex.Match(path, @".+?(?<=Total War Medieval 1 Gold)").ToString() +
-                    $"/Textures/Ground/{terrainType.ToTextureFolder()}/{TextureId:D3}.tga";
-            }
-            public override int GetHashCode()
-            {
-                return TextureId << 8 | Orientation;
-            }
-        }
         public ushort Dimensions { get; private set; }
         public ushort Divisions { get; private set; }
         public uint TerrainSizeInBytes { get; private set; }
@@ -63,7 +69,7 @@ namespace mtw3dviewer.FileFormats
         public List<Vertex> Vertices { get; private set; } = new();
         public GridNode[,,] Nodes { get; private set; }
         public MapTexture[,] Textures { get; private set; }
-        public List<MapTexture> DistinctTextures { get; private set; } = new(); 
+        public List<MapTexture> DistinctTextures { get; private set; } = new();
         public void LoadMap(string path)
         {
             _data = File.ReadAllBytes(path);
@@ -103,9 +109,11 @@ namespace mtw3dviewer.FileFormats
                     }
                 }
                 // Textures
-                for (int y = 0; y < Textures.GetLength(1); y++)
+                //for (int y = Textures.GetLength(1) - 1; y >= 0; y--)
+                for (int y = 0; y < Textures.GetLength(0); y++)
                 {
                     for (int x = 0; x < Textures.GetLength(0); x++)
+                    //for (int x = Textures.GetLength(0) - 1; x >= 0; x--)
                     {
                         var tex = MapTexture.Parse(reader);
                         if (!DistinctTextures.Contains(tex))
